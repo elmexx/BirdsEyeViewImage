@@ -36,7 +36,7 @@ def rotZ(a):
                   [0,0,1]])
     return R 
 
-def birdseyeviewimage(image,IntrinsicMatrix,CameraPose,OutImgView,OutImgeize):
+def birdseyeviewimage(image,IntrinsicMatrix,CameraPose,OutImgView,OutImgSize):
     Pitch = CameraPose.Pitch
     Yaw = CameraPose.Yaw
     Roll = CameraPose.Roll
@@ -48,7 +48,7 @@ def birdseyeviewimage(image,IntrinsicMatrix,CameraPose,OutImgView,OutImgeize):
     bottomOffset = OutImgView.bottomOffset
     
     outView = np.array([bottomOffset,distAheadOfSensor,-spaceToLeftSide,spaceToRightSide])
-    reqImgHW = OutImgeize
+    reqImgHW = OutImgSize
     worldHW  = np.abs([outView[1]-outView[0], outView[3]-outView[2]])
     
     rotation = np.linalg.multi_dot([rotY(180),rotZ(-90),rotZ(Yaw),rotX(90-Pitch),rotZ(Roll)])
@@ -114,10 +114,10 @@ OutImageView = _DictObjHolder({
         "bottomOffset": bottomOffset,
         })
 
-OutImgeize = np.array([np.nan, 500])  # image H, image W
+OutImageSize = np.array([np.nan, 500])  # image H, image W
 
 image = cv2.imread('000_000100.png')
-birdseyeview = birdseyeviewimage(image, IntrinsicMatrix, CameraPose, OutImageView, OutImgeize)
+birdseyeview = birdseyeviewimage(image, IntrinsicMatrix, CameraPose, OutImageView, OutImageSize)
 plt.imshow(birdseyeview)
 
 
