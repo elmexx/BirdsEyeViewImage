@@ -48,7 +48,7 @@ def birdseyeviewimage(image,IntrinsicMatrix,CameraPose,OutImgView,OutImgSize):
     bottomOffset = OutImgView.bottomOffset
     
     outView = np.array([bottomOffset,distAheadOfSensor,-spaceToLeftSide,spaceToRightSide])
-    reqImgHW = OutImgSize
+    reqImgHW = OutImgSize.copy()
     worldHW  = np.abs([outView[1]-outView[0], outView[3]-outView[2]])
     
     rotation = np.linalg.multi_dot([rotY(180),rotZ(-90),rotZ(Yaw),rotX(90-Pitch),rotZ(Roll)])
