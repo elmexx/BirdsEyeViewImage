@@ -66,13 +66,17 @@ def birdseyeviewimage(image,IntrinsicMatrix,CameraPose,OutImgView,OutImgSize):
     bevTform = np.dot(vehicleHomography,adjTform)
     
     nanIdxHW = np.isnan(reqImgHW)
-    scale   = (reqImgHW[~nanIdxHW]-1)/worldHW[~nanIdxHW]
-    scaleXY = np.hstack([scale, scale])
-    worldDim = worldHW[nanIdxHW]
-    outDimFrac = scale*worldDim
-    outDim     = np.round(outDimFrac)+1
-    outSize = reqImgHW
-    outSize[nanIdxHW] = outDim
+    if ~nanIdxHW.any():
+        scaleXY = np.flipud((reqImgHW-1)/worldHW)
+        outSize = reqImgHW
+    else:
+        scale   = (reqImgHW[~nanIdxHW]-1)/worldHW[~nanIdxHW]
+        scaleXY = np.hstack([scale, scale])
+        worldDim = worldHW[nanIdxHW]
+        outDimFrac = scale*worldDim
+        outDim     = np.round(outDimFrac)+1
+        outSize = reqImgHW
+        outSize[nanIdxHW] = outDim
     OutputView = outView
     dYdXVehicle = np.array([OutputView[3], OutputView[1]])
     tXY         = scaleXY*dYdXVehicle
@@ -119,6 +123,3 @@ OutImageSize = np.array([np.nan, 500])  # image H, image W
 image = cv2.imread('000_000100.png')
 birdseyeview = birdseyeviewimage(image, IntrinsicMatrix, CameraPose, OutImageView, OutImageSize)
 plt.imshow(birdseyeview)
-
-
-
